@@ -55,19 +55,25 @@ export default function (elem, centerIfNeeded, options) {
       var scrollLeft = withinBounds(
           parent.scrollLeft,
           area.right - parent.clientWidth, area.left,
-          parent.clientWidth)
+          parent.clientWidth);
       var scrollTop = withinBounds(
           parent.scrollTop,
           area.bottom - parent.clientHeight, area.top,
-          parent.clientHeight)
+          parent.clientHeight);
       if(options) {
         animate(parent, {
            scrollLeft: scrollLeft,
           scrollTop: scrollTop
         }, options)
       } else {
-        parent.scrollLeft = scrollLeft
-        parent.scrollTop = scrollTop
+        // Checking if overflow is scroll or auto on the computed styles for the element.
+        // http://stackoverflow.com/a/36900407/2167422
+        var overflowX = window.getComputedStyle(parent)["overflow-x"];
+        if (overflowX === "scroll" || overflowX === "auto")
+          parent.scrollLeft = scrollLeft;
+        var overflowY = window.getComputedStyle(parent)["overflow-y"];
+        if (overflowY === "scroll" || overflowY === "auto")
+          parent.scrollTop = scrollTop;
       }
 
       // Determine actual scroll amount by reading back scroll properties.
